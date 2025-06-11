@@ -1,5 +1,53 @@
 {
-    "employee":[
-        
-    ]
+  "employee": [
+    {
+      "id": "1",
+      "name": "zanna",
+      "doj": "2025-07-10T23:00:00.000Z",
+      "role": "lead",
+      "salary": "10000"
+    },
+    {
+      "id": "2",
+      "name": "Sydney",
+      "doj": "2025-06-11T09:28:16.999Z",
+      "role": "operator",
+      "salary": "10000"
+    },
+    {
+      "id": "3",
+      "name": "Samuel",
+      "doj": "2025-06-11T09:33:52.991Z",
+      "role": "manager",
+      "salary": "20000"
+    },
+    {
+      "id": "4",
+      "name": "Noro",
+      "doj": "2025-06-11T11:19:18.652Z",
+      "role": "manager",
+      "salary": "70000"
+    },
+    {
+      "id": "5",
+      "name": "Cornelius",
+      "doj": "2025-06-11T23:00:00.000Z",
+      "role": "lead",
+      "salary": "100000"
+    },
+    {
+      "id": "6",
+      "name": "Harry",
+      "doj": "2025-06-12T23:00:00.000Z",
+      "role": "lead",
+      "salary": "100000"
+    },
+    {
+      "id": "7",
+      "name": "Solomon",
+      "doj": "2025-06-11T18:30:12.107Z",
+      "role": "operator",
+      "salary": "15000"
+    }
+  ]
 }

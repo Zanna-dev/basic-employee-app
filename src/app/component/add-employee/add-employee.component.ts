@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,22 +10,50 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Employee } from '../../model/Employee';
 import { EmployeeService } from '../../service/employee.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-employee',
-  imports: [MatCardModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatDatepickerModule, MatIconModule],
+  imports: [MatCardModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, 
+    MatSelectModule, MatDatepickerModule, MatIconModule
+],
   providers: [provideNativeDateAdapter()],
   templateUrl: './add-employee.component.html',
   styleUrl: './add-employee.component.css'
 })
-export class AddEmployeeComponent {
-
-  constructor(private service:EmployeeService,private ref:MatDialogRef<AddEmployeeComponent>){
-
-  }
+export class AddEmployeeComponent implements OnInit{
 
   title = 'Add Employee'
+  dialodata:any;
+  isEdit=false;
+
+  constructor(private service:EmployeeService,
+    private toastr: ToastrService,
+    private ref:MatDialogRef<AddEmployeeComponent>, @Inject(MAT_DIALOG_DATA) public data:any){
+     
+  }
+  ngOnInit(): void {
+    this.dialodata=this.data;
+    if(this.dialodata.code>0){
+      this.title='Edit Employee';
+      this.isEdit=true;
+      this.service.Get(this.dialodata.code).subscribe(item=>{
+        let _data=item;
+        if(_data!=null){
+          this.empForm.setValue({
+            id: _data.id,
+            name: _data.name,
+            doj: _data.doj,
+            role: _data.role,
+            salary: _data.salary
+          })
+        }
+      })
+    }
+  }
+
+  
   empForm = new FormGroup({
     id: new FormControl(0),
     name: new FormControl('', Validators.required),
@@ -43,10 +71,20 @@ export class AddEmployeeComponent {
           role: this.empForm.value.role as string,
           salary: this.empForm.value.salary as number,
         }
-        this.service.Create(_data).subscribe(item=>{
-          alert('saved')
-          this.closepopup();
-        });
+
+        if(this.isEdit){
+          this.service.Update(_data).subscribe(item=>{
+           this.toastr.success("Save Successfully", "Updated");
+           this.closepopup();
+         });
+
+        }else{
+          this.service.Create(_data).subscribe(item=>{
+           this.toastr.success("Save Successfully", "Created");
+           this.closepopup();
+         });
+        }
+        
     }
   }
 
