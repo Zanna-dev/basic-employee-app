@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { EmployeeService } from "../service/employee.service";
-import { deleteEmployee, deleteEmployeeSuc, emptyAction, loadEmployee, loadEmployeeFail, loadEmployeeSuc } from "./Employee.Action";
+import { addEmployee, addEmployeeSuc, deleteEmployee, deleteEmployeeSuc, emptyAction, loadEmployee, loadEmployeeFail, loadEmployeeSuc, updateEmployee, updateEmployeeSuc } from "./Employee.Action";
 import { catchError, exhaustMap, map, of, switchMap } from "rxjs";
 import { ToastrService } from "ngx-toastr";
 
@@ -45,12 +45,27 @@ export class empEffect {
 
     _addEmployee=createEffect(()=>
        this.actions$.pipe(
-        ofType(deleteEmployee),
+        ofType(addEmployee),
         switchMap((action)=>{
-            return this.service.Delete(action.empId).pipe(
+            return this.service.Create(action.data).pipe(
                 switchMap((data)=>{
-                    return of(deleteEmployeeSuc({empId: action.empId}),
-                    this.Showalert('Deleted Successfully.','pass')
+                    return of(addEmployeeSuc({data: action.data}),
+                    this.Showalert('created Successfully.','pass')
+                )
+                }),
+                catchError((err)=> of(this.Showalert(err.message,'fail')))
+            )
+        })
+    ))
+
+    _updateEmployee=createEffect(()=>
+       this.actions$.pipe(
+        ofType(updateEmployee),
+        switchMap((action)=>{
+            return this.service.Update(action.data).pipe(
+                switchMap((data)=>{
+                    return of(updateEmployeeSuc({data: action.data}),
+                    this.Showalert('Updated Successfully.','pass')
                 )
                 }),
                 catchError((err)=> of(this.Showalert(err.message,'fail')))

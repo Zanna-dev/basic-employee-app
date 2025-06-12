@@ -12,6 +12,9 @@ import { Employee } from '../../model/Employee';
 import { EmployeeService } from '../../service/employee.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { Store } from '@ngrx/store';
+import { addEmployee, getEmployee, updateEmployee } from '../../Store/Employee.Action';
+import { selectEmployee } from '../../Store/Employee.Selector';
 
 @Component({
   selector: 'app-add-employee',
@@ -28,18 +31,25 @@ export class AddEmployeeComponent implements OnInit{
   dialodata:any;
   isEdit=false;
 
-  constructor(private service:EmployeeService,
+  //constructor(private service:EmployeeService,
+  //  private toastr: ToastrService,
+  //  private ref:MatDialogRef<AddEmployeeComponent>, @Inject(MAT_DIALOG_DATA) public data:any){
+     
+  //}
+  constructor(private store:Store,
     private toastr: ToastrService,
     private ref:MatDialogRef<AddEmployeeComponent>, @Inject(MAT_DIALOG_DATA) public data:any){
      
   }
+
   ngOnInit(): void {
     this.dialodata=this.data;
     if(this.dialodata.code>0){
       this.title='Edit Employee';
       this.isEdit=true;
-      this.service.Get(this.dialodata.code).subscribe(item=>{
-        let _data=item;
+      this.store.dispatch(getEmployee({empId:this.dialodata.code}));
+      this.store.select(selectEmployee).subscribe(item=>{
+         let _data=item;
         if(_data!=null){
           this.empForm.setValue({
             id: _data.id,
@@ -50,6 +60,18 @@ export class AddEmployeeComponent implements OnInit{
           })
         }
       })
+      //this.service.Get(this.dialodata.code).subscribe(item=>{
+       // let _data=item;
+       // if(_data!=null){
+        //  this.empForm.setValue({
+         //   id: _data.id,
+         //   name: _data.name,
+       //     doj: _data.doj,
+        //    role: _data.role,
+        //    salary: _data.salary
+        //  })
+       // }
+      //})
     }
   }
 
@@ -72,19 +94,20 @@ export class AddEmployeeComponent implements OnInit{
           salary: this.empForm.value.salary as number,
         }
 
-        if(this.isEdit){
-          this.service.Update(_data).subscribe(item=>{
-           this.toastr.success("Save Successfully", "Updated");
-           this.closepopup();
-         });
-
+        if(!this.isEdit){
+          //this.service.Update(_data).subscribe(item=>{
+          // this.toastr.success("Save Successfully", "Updated");
+          // this.closepopup();
+         //});
+          this.store.dispatch(addEmployee({data:_data}));
         }else{
-          this.service.Create(_data).subscribe(item=>{
-           this.toastr.success("Save Successfully", "Created");
-           this.closepopup();
-         });
+          //this.service.Create(_data).subscribe(item=>{
+          // this.toastr.success("Save Successfully", "Created");
+          // this.closepopup();
+        // });
+        this.store.dispatch(updateEmployee({data:_data}));
         }
-        
+        this.closepopup();
     }
   }
 

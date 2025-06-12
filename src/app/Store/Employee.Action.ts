@@ -14,6 +14,8 @@ export const ADD_EMPLOYEE_SUCC = '[employee] add succ'
 export const UPDATE_EMPLOYEE = '[employee] update'
 export const UPDATE_EMPLOYEE_SUCC = '[employee] update succ'
 
+export const GET_EMPLOYEE = '[employee] get employee'
+
 export const loadEmployee = createAction(LOAD_EMPLOYEE)
 export const loadEmployeeSuc = createAction(LOAD_EMPLOYEE_SUCCESS, props<{ list: Employee[] }>())
 export const loadEmployeeFail = createAction(LOAD_EMPLOYEE_FAIL,props<{ errMsg: string }>())
@@ -26,5 +28,7 @@ export const addEmployeeSuc = createAction(ADD_EMPLOYEE_SUCC, props<{ data:Emplo
 
 export const updateEmployee = createAction(UPDATE_EMPLOYEE,props<{data:Employee}>())
 export const updateEmployeeSuc = createAction(UPDATE_EMPLOYEE_SUCC, props<{ data:Employee }>())
+
+export const getEmployee = createAction(GET_EMPLOYEE,props<{empId:number}>())
 
 export const emptyAction = createAction('empty')
