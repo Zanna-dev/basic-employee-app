@@ -8,6 +8,8 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideToastr } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { employeeReducer } from './Store/Employee.Reducer';
+import { empEffect } from './Store/Employee.Effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
@@ -17,5 +19,7 @@ export const appConfig: ApplicationConfig = {
       closeButton: true,
       progressBar: true,
     }),
-    provideHttpClient(), provideAnimations(),provideStore(), provideEffects(), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
+    provideHttpClient(), provideAnimations(),
+    provideStore({'emp':employeeReducer}), provideEffects([empEffect]), 
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
 };
